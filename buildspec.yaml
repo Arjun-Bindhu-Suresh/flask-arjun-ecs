@@ -3,18 +3,21 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo "🔐 Logging in to Amazon ECR..."
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 445567116039.dkr.ecr.us-east-1.amazonaws.com
-      - echo "📦 Setting the image repository URI..."
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login --no-include-email --region us-east-1)
       - REPO_URI=445567116039.dkr.ecr.us-east-1.amazonaws.com/arjun-ecs-repo
       - IMAGE_TAG=latest
   build:
     commands:
-      - echo "🔨 Building the Docker image..."
+      - echo Building Docker image...
       - docker build -t $REPO_URI:$IMAGE_TAG .
+      - docker push $REPO_URI:$IMAGE_TAG
   post_build:
     commands:
-      - echo "🚀 Pushing the Docker image to ECR..."
-      - docker push $REPO_URI:$IMAGE_TAG
+      - echo Creating imagedefinitions.json...
+      - printf '[{"name":"arjun-container","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > imagedefinitions.json
+
 artifacts:
-  files: '**/*'
+  files:
+    - imagedefinitions.json
