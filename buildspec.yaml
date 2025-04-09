@@ -5,7 +5,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - $(aws ecr get-login --no-include-email --region us-east-1)
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 445567116039.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
@@ -18,9 +18,9 @@ phases:
       - echo Pushing the Docker image...
       - docker push 445567116039.dkr.ecr.us-east-1.amazonaws.com/arjun-ecs-repo:latest
       - echo Writing imagedefinitions.json...
-      - echo '[{"name":"arjun-container","imageUri":"445567116039.dkr.ecr.us-east-1.amazonaws.com/arjun-ecs-repo:latest"}]' > imagedefinitions.json
+      - |
+        printf '[{"name":"arjun-container","imageUri":"445567116039.dkr.ecr.us-east-1.amazonaws.com/arjun-ecs-repo:latest"}]' > imagedefinitions.json
 
 artifacts:
-  base-directory: ./
   files:
     - imagedefinitions.json
