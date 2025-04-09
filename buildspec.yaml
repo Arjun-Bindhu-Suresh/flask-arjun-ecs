@@ -21,6 +21,5 @@ phases:
       - echo '[{"name":"arjun-container","imageUri":"445567116039.dkr.ecr.us-east-1.amazonaws.com/arjun-ecs-repo:latest"}]' > imagedefinitions.json
 
 artifacts:
-  base-directory: ./
   files:
     - imagedefinitions.json
