@@ -5,12 +5,16 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 445567116039.dkr.ecr.us-east-1.amazonaws.com
+
   build:
     commands:
       - echo Building the Docker image...
       - docker build -t arjun-ecs-repo .
       - docker tag arjun-ecs-repo:latest 445567116039.dkr.ecr.us-east-1.amazonaws.com/arjun-ecs-repo:latest
       - docker push 445567116039.dkr.ecr.us-east-1.amazonaws.com/arjun-ecs-repo:latest
+
+  post_build:
+    commands:
       - echo Writing imagedefinitions.json...
       - echo '[{"name":"arjun-container","imageUri":"445567116039.dkr.ecr.us-east-1.amazonaws.com/arjun-ecs-repo:latest"}]' > imagedefinitions.json
 
